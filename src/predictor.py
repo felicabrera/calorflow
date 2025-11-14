@@ -45,16 +45,16 @@ def load_trained_models(model_dir: str = 'models',
     # Try to load full trainer
     try:
         trainer = MLTrainer.load(model_dir, process_name)
-        print(f"  ✅ Loaded full trainer from {model_path}")
+        print(f"  Loaded full trainer from {model_path}")
         return trainer.ensemble_pci, trainer.ensemble_h2
     except Exception as e:
-        print(f"  ⚠️  Could not load full trainer: {e}")
+        print(f"  Warning: Could not load full trainer: {e}")
         
         # Try to load individual ensembles
         try:
             pci_ensemble = joblib.load(model_path / f'{process_name}_ensemble_pci.joblib')
             h2_ensemble = joblib.load(model_path / f'{process_name}_ensemble_h2.joblib')
-            print(f"  ✅ Loaded individual ensembles from {model_path}")
+            print(f"  Loaded individual ensembles from {model_path}")
             return pci_ensemble, h2_ensemble
         except Exception as e2:
             raise FileNotFoundError(
@@ -145,7 +145,7 @@ def predict_from_raw_data(data_path: str,
     result['PCI_pred'] = y_pred_pci
     result['H2_pred'] = y_pred_h2
     
-    print("✅ Prediction pipeline completed!")
+    print("Prediction pipeline completed!")
     
     return result
 
@@ -194,7 +194,7 @@ def load_test_data_for_prediction(process: str = 'FCC',
         test_start = pd.Timestamp('2025-03-01')
         test_end = pd.Timestamp('2025-08-31')
         df = df[(df[date_col] >= test_start) & (df[date_col] <= test_end)]
-        print(f"  ✅ Filtered to test period: {len(df)} samples")
+        print(f"  Filtered to test period: {len(df)} samples")
     
     # Preprocess and create features
     df = preprocess_data(df, handle_missing='interpolate', remove_outliers=False)
@@ -254,7 +254,7 @@ def generate_competition_submission(process: str = 'FCC',
     submission_file = output_path / f'{process}_submission_{timestamp}.csv'
     submission.to_csv(submission_file, index=False)
     
-    print(f"\n✅ Submission saved: {submission_file}")
+    print(f"\nSubmission saved: {submission_file}")
     print(f"   Samples: {len(submission)}")
     print(f"   PCI range: [{submission['PCI'].min():.2f}, {submission['PCI'].max():.2f}]")
     print(f"   H2 range: [{submission['H2'].min():.2f}, {submission['H2'].max():.2f}]")
@@ -299,7 +299,7 @@ def predict_multiple_files(file_paths: list,
         output_file = output_path / f'{input_name}_predictions.csv'
         result.to_csv(output_file, index=False)
         
-        print(f"  ✅ Saved: {output_file}")
+        print(f"  Saved: {output_file}")
         output_files.append(str(output_file))
     
     return output_files

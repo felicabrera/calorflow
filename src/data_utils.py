@@ -43,7 +43,7 @@ def load_data(filepath: str, sep: Optional[str] = None) -> pd.DataFrame:
             try:
                 df = pd.read_csv(filepath, sep=separator)
                 if len(df.columns) > 1:
-                    print(f"  ✅ Loaded with separator '{separator}': {len(df.columns)} columns")
+                    print(f"  Loaded with separator '{separator}': {len(df.columns)} columns")
                     break
             except Exception as e:
                 continue
@@ -52,7 +52,7 @@ def load_data(filepath: str, sep: Optional[str] = None) -> pd.DataFrame:
             raise ValueError(f"Could not load data from {filepath}")
     else:
         df = pd.read_csv(filepath, sep=sep)
-        print(f"  ✅ Loaded {len(df.columns)} columns, {len(df)} rows")
+        print(f"  Loaded {len(df.columns)} columns, {len(df)} rows")
     
     return df
 
@@ -81,7 +81,7 @@ def load_fcc_data(data_dir: str = 'data/FCC - Cracking Catalítico') -> Tuple[pd
         dfs = [load_data(str(f)) for f in operational_files]
         df_operational = pd.concat(dfs, ignore_index=True) if len(dfs) > 1 else dfs[0]
     else:
-        print("  ⚠️  No operational data file found (looking for Predictoras*FCC*.csv)")
+        print("  Warning: No operational data file found (looking for Predictoras*FCC*.csv)")
         df_operational = pd.DataFrame()
     
     # Load gas composition data (R-CRACKING files)
@@ -92,7 +92,7 @@ def load_fcc_data(data_dir: str = 'data/FCC - Cracking Catalítico') -> Tuple[pd
         dfs = [load_data(str(f)) for f in gas_files]
         df_gas = pd.concat(dfs, ignore_index=True) if len(dfs) > 1 else dfs[0]
     else:
-        print("  ⚠️  No gas composition file found (looking for R-CRACKING*.csv)")
+        print("  Warning: No gas composition file found (looking for R-CRACKING*.csv)")
         df_gas = pd.DataFrame()
     
     print("="*60 + "\n")
@@ -124,7 +124,7 @@ def load_ccr_data(data_dir: str = 'data/CCR - Reforming Catalítico') -> Tuple[p
         dfs = [load_data(str(f)) for f in operational_files]
         df_operational = pd.concat(dfs, ignore_index=True) if len(dfs) > 1 else dfs[0]
     else:
-        print("  ⚠️  No operational data file found (looking for Predictoras*CCR*.csv)")
+        print("  Warning: No operational data file found (looking for Predictoras*CCR*.csv)")
         df_operational = pd.DataFrame()
     
     # Load gas composition data (R-RFM files)
@@ -135,7 +135,7 @@ def load_ccr_data(data_dir: str = 'data/CCR - Reforming Catalítico') -> Tuple[p
         dfs = [load_data(str(f)) for f in gas_files]
         df_gas = pd.concat(dfs, ignore_index=True) if len(dfs) > 1 else dfs[0]
     else:
-        print("  ⚠️  No gas composition file found (looking for *RFM*.csv or *rfm*.csv)")
+        print("  Warning: No gas composition file found (looking for *RFM*.csv or *rfm*.csv)")
         df_gas = pd.DataFrame()
     
     print("="*60 + "\n")
@@ -230,7 +230,7 @@ def merge_operational_and_gas(df_operational: pd.DataFrame,
     print("Merging operational and gas composition data...")
     
     if timestamp_col not in df_operational.columns or timestamp_col not in df_gas.columns:
-        print("  ⚠️  Timestamp column not found, performing simple merge")
+        print("  Warning: Timestamp column not found, performing simple merge")
         return pd.concat([df_operational, df_gas], axis=1)
     
     # Convert timestamps
@@ -246,7 +246,7 @@ def merge_operational_and_gas(df_operational: pd.DataFrame,
         direction='nearest'
     )
     
-    print(f"  ✅ Merged: {len(df_operational)} operational + {len(df_gas)} gas → {len(df_merged)} rows")
+    print(f"  Merged: {len(df_operational)} operational + {len(df_gas)} gas -> {len(df_merged)} rows")
     
     return df_merged
 
@@ -294,7 +294,7 @@ def check_data_quality(df: pd.DataFrame, target_cols: Optional[List[str]] = None
         if len(cols_with_missing) > 5:
             print(f"     ... and {len(cols_with_missing) - 5} more")
     else:
-        print("   ✅ No missing values")
+        print("   No missing values")
     
     quality_report['missing_values'] = missing.sum()
     quality_report['missing_pct'] = missing_pct.mean()
@@ -362,19 +362,19 @@ def validate_train_test_split(X_train: pd.DataFrame, X_test: pd.DataFrame) -> bo
     missing_in_train = test_cols - train_cols
     
     if missing_in_test:
-        print(f"  ⚠️  Columns in train but not in test: {missing_in_test}")
+        print(f"  Warning: Columns in train but not in test: {missing_in_test}")
         return False
     
     if missing_in_train:
-        print(f"  ⚠️  Columns in test but not in train: {missing_in_train}")
+        print(f"  Warning: Columns in test but not in train: {missing_in_train}")
         return False
     
     # Check column order
     if list(X_train.columns) != list(X_test.columns):
-        print("  ⚠️  Column order differs between train and test")
+        print("  Warning: Column order differs between train and test")
         return False
     
-    print("  ✅ Train/test split is valid")
+    print("  Train/test split is valid")
     return True
 
 
@@ -432,13 +432,13 @@ def save_processed_data(df: pd.DataFrame, output_path: str):
     """Save processed data to CSV"""
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(output_path, index=False)
-    print(f"✅ Saved processed data to {output_path}")
+    print(f"Saved processed data to {output_path}")
 
 
 def load_processed_data(filepath: str) -> pd.DataFrame:
     """Load processed data from CSV"""
     df = pd.read_csv(filepath)
-    print(f"✅ Loaded processed data from {filepath}")
+    print(f"Loaded processed data from {filepath}")
     return df
 
 

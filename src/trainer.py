@@ -185,7 +185,7 @@ class BayesianOptimizer:
             Dictionary with best parameters and score
         """
         if not OPTUNA_AVAILABLE:
-            print(f"  ⚠️  Optuna not available, using default parameters for {model_type}")
+            print(f"  Warning: Optuna not available, using default parameters for {model_type}")
             return self._get_default_params(model_type)
         
         print(f"  Optimizing {model_type} for {self.target_name}...")
@@ -505,7 +505,7 @@ class MLTrainer:
         print(f"Within ±10% - PCI: {competition_score['within_10_pci']}, H2: {competition_score['within_10_h2']}")
         
         elapsed = time.time() - start_time
-        print(f"\n✅ Training completed in {elapsed/60:.1f} minutes")
+        print(f"\nTraining completed in {elapsed/60:.1f} minutes")
         print("="*80)
         
         # Store results
@@ -548,13 +548,13 @@ class MLTrainer:
             
             # Check availability
             if model_type == 'xgboost' and not XGBOOST_AVAILABLE:
-                print(f"    ⚠️  XGBoost not available, skipping")
+                print(f"    Warning: XGBoost not available, skipping")
                 continue
             elif model_type == 'lightgbm' and not LIGHTGBM_AVAILABLE:
-                print(f"    ⚠️  LightGBM not available, skipping")
+                print(f"    Warning: LightGBM not available, skipping")
                 continue
             elif model_type == 'catboost' and not CATBOOST_AVAILABLE:
-                print(f"    ⚠️  CatBoost not available, skipping")
+                print(f"    Warning: CatBoost not available, skipping")
                 continue
             
             # Optimize hyperparameters
@@ -626,7 +626,7 @@ class MLTrainer:
             return predictor
             
         except Exception as e:
-            print(f"    ⚠️  AutoGluon training failed: {e}")
+            print(f"    Warning: AutoGluon training failed: {e}")
             return None
     
     def _create_ensemble(self, models: Dict, oof_predictions: np.ndarray,
@@ -697,7 +697,7 @@ class MLTrainer:
                     history_json[key] = value
             json.dump(history_json, f, indent=2)
         
-        print(f"\n✅ Models saved to {output_path}")
+        print(f"\nModels saved to {output_path}")
     
     @staticmethod
     def load(model_dir: str, process_name: str) -> 'MLTrainer':
@@ -725,7 +725,7 @@ class MLTrainer:
             with open(history_file, 'r') as f:
                 trainer.training_history = json.load(f)
         
-        print(f"✅ Models loaded from {model_path}")
+        print(f"Models loaded from {model_path}")
         
         return trainer
 
