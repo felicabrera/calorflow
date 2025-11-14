@@ -7,17 +7,17 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Any, List
 
-from src.trainer import MLTrainer, TrainerConfig, train_pipeline
-from src.predictor import (
+from ..trainer import MLTrainer, TrainerConfig, train_pipeline
+from ..predictor import (
     load_trained_models,
     predict_from_features,
     predict_from_raw_data,
     generate_competition_submission,
     predict_multiple_files
 )
-from src.data_utils import load_data, preprocess_data, check_data_quality
-from src.features import create_features, clean_feature_names
-from src.api_schemas import (
+from ..data_utils import load_data, preprocess_data, check_data_quality
+from ..features import create_features, clean_feature_names
+from .api_schemas import (
     TrainingRequest, TrainingResponse,
     PredictionRequest, PredictionResponse,
     BatchPredictionRequest, BatchPredictionResponse,
@@ -25,7 +25,7 @@ from src.api_schemas import (
     DataQualityRequest, DataQualityResponse,
     HealthCheckResponse, ModelListResponse
 )
-from src.api_helpers import (
+from .api_helpers import (
     handle_api_errors,
     serialize_predictions,
     serialize_training_results,
