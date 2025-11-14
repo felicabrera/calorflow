@@ -65,6 +65,9 @@ logs/
 *.log
 *.out
 
+# API uploads
+data/uploads/
+
 # Plots and visualizations
 plots/
 *.png

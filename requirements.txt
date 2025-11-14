@@ -150,6 +150,13 @@ seaborn>=0.12.0
 # great-expectations>=0.18.0  # OPTIONAL - Data validation framework
 
 # ============================================================================
+# BACKEND API (REQUIRED for FastAPI)
+# ============================================================================
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+pydantic>=2.5.0
+
 # DEVELOPMENT & JUPYTER (REQUIRED for notebooks)
 # ============================================================================
 jupyter>=1.0.0

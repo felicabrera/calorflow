@@ -284,7 +284,7 @@ def check_data_quality_endpoint(request: DataQualityRequest) -> Dict[str, Any]:
         raise ValueError("Must provide either data_path or data")
     
     # Check quality
-    quality_report = check_data_quality(df, target_cols=request.target_cols, verbose=False)
+    quality_report = check_data_quality(df, target_cols=request.target_cols)
     
     # Calculate quality score
     missing_score = 100 - (quality_report['total_missing_pct'])
