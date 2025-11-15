@@ -116,8 +116,8 @@ def predict_from_raw_data(data_path: str,
     Returns:
         DataFrame with predictions
     """
-    from src.data_utils import load_data, preprocess_data
-    from src.features import create_features, clean_feature_names
+    from ..utils.data_utils import load_data, preprocess_data
+    from .features import create_features, clean_feature_names
     
     print("\n" + "="*80)
     print(f"COMPLETE PREDICTION PIPELINE - {process_name}")
@@ -166,8 +166,8 @@ def load_test_data_for_prediction(process: str = 'FCC',
     Returns:
         DataFrame with test features
     """
-    from src.data_utils import load_fcc_data, load_ccr_data, merge_operational_and_gas, preprocess_data
-    from src.features import create_features, clean_feature_names
+    from ..utils.data_utils import load_fcc_data, load_ccr_data, merge_operational_and_gas, preprocess_data
+    from .features import create_features, clean_feature_names
     
     print(f"\nLoading test data for {process}...")
     

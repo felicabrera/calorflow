@@ -266,77 +266,26 @@ def check_data_quality(df: pd.DataFrame, target_cols: Optional[List[str]] = None
     Returns:
         Dictionary with quality metrics
     """
-    print("\n" + "="*60)
-    print("DATA QUALITY REPORT")
-    print("="*60)
-    
     quality_report = {}
     
-    # 1. Basic statistics
-    print(f"\n1. Basic Statistics:")
-    print(f"   Rows: {len(df)}")
-    print(f"   Columns: {len(df.columns)}")
-    print(f"   Memory usage: {df.memory_usage(deep=True).sum() / 1024**2:.2f} MB")
+    # Basic statistics
+    quality_report['n_samples'] = len(df)
+    quality_report['n_features'] = len(df.columns)
     
-    quality_report['n_rows'] = len(df)
-    quality_report['n_cols'] = len(df.columns)
-    
-    # 2. Missing values
-    print(f"\n2. Missing Values:")
+    # Missing values
     missing = df.isnull().sum()
     missing_pct = (missing / len(df) * 100).round(2)
     
-    cols_with_missing = missing[missing > 0]
-    if len(cols_with_missing) > 0:
-        print(f"   Columns with missing values: {len(cols_with_missing)}")
-        for col in cols_with_missing.head(5).index:
-            print(f"     {col}: {missing[col]} ({missing_pct[col]}%)")
-        if len(cols_with_missing) > 5:
-            print(f"     ... and {len(cols_with_missing) - 5} more")
-    else:
-        print("   No missing values")
+    quality_report['missing_values'] = {col: int(count) for col, count in missing.items() if count > 0}
+    quality_report['total_missing_pct'] = float(missing_pct.mean())
     
-    quality_report['missing_values'] = missing.sum()
-    quality_report['missing_pct'] = missing_pct.mean()
+    # Duplicates
+    quality_report['duplicates'] = int(df.duplicated().sum())
     
-    # 3. Data types
-    print(f"\n3. Data Types:")
-    dtype_counts = df.dtypes.value_counts()
-    for dtype, count in dtype_counts.items():
-        print(f"   {dtype}: {count} columns")
-    
-    quality_report['dtypes'] = dtype_counts.to_dict()
-    
-    # 4. Numeric columns statistics
-    print(f"\n4. Numeric Columns Summary:")
-    numeric_cols = df.select_dtypes(include=[np.number]).columns
-    
-    if len(numeric_cols) > 0:
-        print(f"   Mean: {df[numeric_cols].mean().mean():.2f}")
-        print(f"   Std: {df[numeric_cols].std().mean():.2f}")
-        print(f"   Min: {df[numeric_cols].min().min():.2f}")
-        print(f"   Max: {df[numeric_cols].max().max():.2f}")
-    
-    # 5. Target columns (if specified)
-    if target_cols:
-        print(f"\n5. Target Columns Analysis:")
-        for target in target_cols:
-            if target in df.columns:
-                print(f"   {target}:")
-                print(f"     Mean: {df[target].mean():.4f}")
-                print(f"     Std: {df[target].std():.4f}")
-                print(f"     Min: {df[target].min():.4f}")
-                print(f"     Max: {df[target].max():.4f}")
-                print(f"     Missing: {df[target].isnull().sum()}")
-    
-    # 6. Duplicates
-    print(f"\n6. Duplicate Rows:")
-    n_duplicates = df.duplicated().sum()
-    print(f"   Duplicates: {n_duplicates} ({n_duplicates / len(df) * 100:.2f}%)")
-    
-    quality_report['n_duplicates'] = n_duplicates
-    
-    print("="*60 + "\n")
+    # Feature types
+    quality_report['numeric_features'] = len(df.select_dtypes(include=[np.number]).columns)
+    quality_report['categorical_features'] = len(df.select_dtypes(include=['object']).columns)
+    quality_report['datetime_features'] = len(df.select_dtypes(include=['datetime64']).columns)
     
     return quality_report
 
