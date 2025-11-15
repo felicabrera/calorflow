@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import {
   Box,
   Container,
-  Grid,
   Paper,
   Typography,
   Button,
@@ -11,8 +10,8 @@ import {
   Alert,
   Card,
   CardContent,
-  CardActions,
   Divider,
+  Stack,
 } from '@mui/material';
 import {
   CheckCircle,
@@ -87,9 +86,10 @@ export default function Dashboard() {
         />
       </Box>
 
-      <Grid container spacing={3}>
-        {/* System Info Card */}
-        <Grid item xs={12} md={6}>
+      <Stack spacing={3}>
+        {/* Info Cards Row */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+          {/* System Info Card */}
           <Card elevation={3}>
             <CardContent>
               <Typography variant="h6" gutterBottom fontWeight={600}>
@@ -119,10 +119,8 @@ export default function Dashboard() {
               </Box>
             </CardContent>
           </Card>
-        </Grid>
 
-        {/* Models Availability Card */}
-        <Grid item xs={12} md={6}>
+          {/* Models Availability Card */}
           <Card elevation={3}>
             <CardContent>
               <Typography variant="h6" gutterBottom fontWeight={600}>
@@ -130,7 +128,7 @@ export default function Dashboard() {
               </Typography>
               <Divider sx={{ mb: 2 }} />
               
-              <Box sx={{ mb: 2 }}>
+              <Stack spacing={2}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="body1" fontWeight={600}>FCC Model</Typography>
                   <Chip
@@ -140,9 +138,7 @@ export default function Dashboard() {
                     size="small"
                   />
                 </Box>
-              </Box>
-              
-              <Box>
+                
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography variant="body1" fontWeight={600}>CCR Model</Typography>
                   <Chip
@@ -152,74 +148,68 @@ export default function Dashboard() {
                     size="small"
                   />
                 </Box>
-              </Box>
+              </Stack>
             </CardContent>
           </Card>
-        </Grid>
+        </Box>
 
         {/* Quick Actions */}
-        <Grid item xs={12}>
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 3 }}>
-              Quick Actions
-            </Typography>
+        <Paper elevation={3} sx={{ p: 3 }}>
+          <Typography variant="h6" gutterBottom fontWeight={600} sx={{ mb: 3 }}>
+            Quick Actions
+          </Typography>
+          
+          <Box sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(4, 1fr)' }, 
+            gap: 2 
+          }}>
+            <Button
+              variant="contained"
+              fullWidth
+              size="large"
+              startIcon={<ModelTraining />}
+              sx={{ py: 2 }}
+              onClick={() => alert('Training interface coming soon')}
+            >
+              Train Models
+            </Button>
             
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6} md={3}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  size="large"
-                  startIcon={<ModelTraining />}
-                  sx={{ py: 2 }}
-                  onClick={() => window.location.href = '#/train'}
-                >
-                  Train Models
-                </Button>
-              </Grid>
-              
-              <Grid item xs={12} sm={6} md={3}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  size="large"
-                  startIcon={<Analytics />}
-                  sx={{ py: 2 }}
-                  onClick={() => window.location.href = '#/predict'}
-                >
-                  Predictions
-                </Button>
-              </Grid>
-              
-              <Grid item xs={12} sm={6} md={3}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  size="large"
-                  startIcon={<Assessment />}
-                  sx={{ py: 2 }}
-                  onClick={() => window.location.href = '#/data-quality'}
-                >
-                  Data Quality
-                </Button>
-              </Grid>
-              
-              <Grid item xs={12} sm={6} md={3}>
-                <Button
-                  variant="outlined"
-                  fullWidth
-                  size="large"
-                  startIcon={<Description />}
-                  sx={{ py: 2 }}
-                  onClick={() => window.open('http://localhost:8000/docs', '_blank')}
-                >
-                  API Docs
-                </Button>
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-      </Grid>
+            <Button
+              variant="outlined"
+              fullWidth
+              size="large"
+              startIcon={<Analytics />}
+              sx={{ py: 2 }}
+              onClick={() => alert('Prediction interface coming soon')}
+            >
+              Predictions
+            </Button>
+            
+            <Button
+              variant="outlined"
+              fullWidth
+              size="large"
+              startIcon={<Assessment />}
+              sx={{ py: 2 }}
+              onClick={() => alert('Data quality interface coming soon')}
+            >
+              Data Quality
+            </Button>
+            
+            <Button
+              variant="outlined"
+              fullWidth
+              size="large"
+              startIcon={<Description />}
+              sx={{ py: 2 }}
+              onClick={() => window.open(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/docs`, '_blank')}
+            >
+              API Docs
+            </Button>
+          </Box>
+        </Paper>
+      </Stack>
     </Container>
   );
 }
