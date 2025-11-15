@@ -3,9 +3,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.trainer import train_pipeline, TrainerConfig
-from src.data_utils import load_fcc_data, merge_operational_and_gas, preprocess_data
-from src.features import create_features, clean_feature_names
+from backend.app.services.trainer import train_pipeline, TrainerConfig
+from backend.app.utils.data_utils import load_fcc_data, merge_operational_and_gas, preprocess_data
+from backend.app.services.features import create_features, clean_feature_names
 import pandas as pd
 import numpy as np
 
