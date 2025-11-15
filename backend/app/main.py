@@ -7,7 +7,7 @@ from typing import Optional
 import logging
 import time
 
-from .api_endpoints import (
+from .api.api_endpoints import (
     train_model_endpoint,
     predict_endpoint,
     batch_predict_endpoint,
@@ -16,7 +16,7 @@ from .api_endpoints import (
     list_models_endpoint,
     health_check_endpoint
 )
-from .api_schemas import (
+from .models.api_schemas import (
     TrainingRequest, TrainingResponse,
     PredictionRequest, PredictionResponse,
     BatchPredictionRequest, BatchPredictionResponse,

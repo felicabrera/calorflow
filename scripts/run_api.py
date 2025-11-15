@@ -17,7 +17,7 @@ if __name__ == "__main__":
     print(f"Documentation: http://{host if host != '0.0.0.0' else 'localhost'}:{port}/docs")
     
     uvicorn.run(
-        "src.api.main:app",
+        "backend.app.main:app",
         host=host,
         port=port,
         reload=reload,

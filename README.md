@@ -6,24 +6,40 @@ Sistema de predicción de PCI y H2 para procesos de refinería (FCC/CCR) con API
 
 ```
 calorflow/
-├── src/
-│   ├── api/
-│   │   ├── main.py              # Aplicación FastAPI principal
-│   │   ├── api_endpoints.py     # Implementación de endpoints
-│   │   ├── api_schemas.py       # Schemas Pydantic
-│   │   ├── api_helpers.py       # Funciones auxiliares
-│   │   └── logging_config.py    # Configuración de logs
-│   ├── data_utils.py            # Utilidades de datos
-│   ├── features.py              # Feature engineering
-│   ├── trainer.py               # Entrenamiento de modelos
-│   └── predictor.py             # Predicciones
+├── backend/                     # Backend service and API code
+│   ├── app/                     # Core backend application code
+│   │   ├── api/                 # API route handlers
+│   │   │   ├── api_endpoints.py # Endpoint implementations
+│   │   │   └── __init__.py
+│   │   ├── models/              # Business or DB models
+│   │   │   ├── api_schemas.py   # Pydantic schemas
+│   │   │   └── __init__.py
+│   │   ├── services/            # Services like ML inference, database interaction
+│   │   │   ├── trainer.py       # ML training service
+│   │   │   ├── predictor.py     # Prediction service
+│   │   │   ├── features.py      # Feature engineering
+│   │   │   └── __init__.py
+│   │   ├── utils/               # Backend utilities/helpers
+│   │   │   ├── api_helpers.py   # API helper functions
+│   │   │   ├── data_utils.py    # Data utilities
+│   │   │   └── __init__.py
+│   │   ├── config.py            # Backend configurations
+│   │   ├── logging_config.py    # Logging configuration
+│   │   ├── main.py              # FastAPI application
+│   │   └── __init__.py
+│   ├── tests/                   # Backend tests
+│   │   ├── test_api.py
+│   │   └── __init__.py
+│   ├── requirements.txt         # Backend-specific dependencies
+│   └── Dockerfile               # Backend Docker container setup
 ├── data/                        # Datasets
 ├── models/                      # Modelos entrenados
 ├── predictions/                 # Predicciones generadas
 ├── logs/                        # Logs de la API
-├── run_api.py                   # Script para ejecutar la API
-├── test_api.py                  # Tests de la API
-└── requirements.txt             # Dependencias
+├── scripts/                     # Utility scripts
+│   └── run_api.py              # Script para ejecutar la API
+├── config/                      # Project configurations
+└── requirements.txt             # Dependencias globales
 
 ```
 

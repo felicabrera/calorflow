@@ -536,4 +536,4 @@ def select_important_features(df: pd.DataFrame, target: pd.Series,
 
 if __name__ == '__main__':
     print("Feature Engineering Module")
-    print("Import this module to use: from src.features import create_features")
+    print("Import this module to use: from backend.app.services.features import create_features")

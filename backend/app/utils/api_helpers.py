@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 from functools import wraps
 
-from .api_schemas import (
+from ..models.api_schemas import (
     ErrorResponse, ErrorDetail, 
     TrainingResponse, PredictionResponse,
     numpy_to_python, dataframe_to_features, features_to_dataframe
