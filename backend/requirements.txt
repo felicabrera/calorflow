@@ -1,0 +1,177 @@
+# ANCAP DataChallenge 2025 - Requirements
+# Dependencias principales para machine learning y análisis de datos
+# Updated with ALL speed optimizations and max score dependencies
+
+# ============================================================================
+# CORE ML LIBRARIES (REQUIRED)
+# ============================================================================
+scikit-learn>=1.3.0
+pandas>=2.0.0
+numpy>=1.24.0
+
+# ============================================================================
+# DASHBOARD & VISUALIZATION (REQUIRED - Real-time training monitoring)
+# ============================================================================
+rich>=13.0.0  # Terminal dashboard with live updates
+
+# ============================================================================
+# GRADIENT BOOSTING MODELS (REQUIRED - State-of-the-art for tabular data)
+# ============================================================================
+xgboost>=2.0.0
+lightgbm>=4.0.0
+catboost>=1.2.0
+
+# ============================================================================
+# DEEP LEARNING FOR TABULAR DATA (REQUIRED - Included in advanced ensemble)
+# ============================================================================
+pytorch-tabnet>=4.0
+torch>=2.0.0
+fastai>=2.8.0  # Deep learning framework (included with AutoGluon)
+# FastAI dependencies (automatically installed):
+# fastcore>=1.8.0, fastdownload>=0.0.7, fastprogress>=1.0.3, fasttransform>=0.0.2
+
+# ============================================================================
+# GPU ACCELERATION (OPTIONAL - Auto-optimization)
+# ============================================================================
+# IMPORTANT: Install PyTorch with CUDA support for GPU acceleration
+# 
+# For CUDA 11.8 (most common):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+# 
+# For CUDA 12.1:
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+# 
+# For CPU only (default):
+#   pip install torch torchvision torchaudio
+#
+# GPU-accelerated boosters (work automatically if CUDA available):
+# - XGBoost: Built-in GPU support (no extra install needed)
+# - LightGBM: GPU support included (requires CUDA, OpenCL, or Boost)
+# - CatBoost: GPU support included (requires CUDA)
+# - TabNet: Uses PyTorch CUDA automatically
+#
+# Hardware auto-optimization (NEW):
+# - System automatically detects CPU cores, GPU VRAM, RAM
+# - Training parameters auto-scale based on hardware (n_trials, batch_size, cv_folds)
+# - Works on any hardware: laptop to high-end server
+# - No manual configuration needed
+#
+# Expected speedup with GPU (NVIDIA RTX 2080 Super or similar):
+#   XGBoost: 5-10x faster
+#   LightGBM: 3-5x faster
+#   CatBoost: 3-5x faster
+#   TabNet: 2-5x faster
+#
+# GPU is automatically detected and only used if beneficial.
+# Small datasets may be faster on CPU with optimizations.
+
+# ============================================================================
+# SPEED OPTIMIZATION #4 & #3: IPEX + SWA for TabNet (OPTIONAL - 2-3x faster + 1-3% better)
+# ============================================================================
+# intel-extension-for-pytorch>=2.0.0  # OPTIONAL - 2-3x faster TabNet on Intel CPUs
+# Note: Install separately: pip install intel-extension-for-pytorch
+# Provides: BFloat16 auto mixed precision, Intel CPU optimizations, SWA support built-in to PyTorch
+# Only used if NO GPU detected (GPU is always preferred over IPEX)
+
+# ============================================================================
+# SPEED OPTIMIZATION #5: Numba JIT Compilation (OPTIONAL - 5-10x faster features)
+# ============================================================================
+# numba>=0.58.0  # OPTIONAL - JIT compilation for rolling window operations
+# Note: Install separately: pip install numba
+# Provides: 5-10x faster feature engineering with @njit decorator
+
+# ============================================================================
+# OPTIMIZATION & HYPERPARAMETER TUNING (REQUIRED)
+# ============================================================================
+optuna>=3.0.0  # Bayesian optimization with ASHA pruner (Speed Opt #1)
+hyperopt>=0.2.7  # OPTIONAL - Tree-structured Parzen Estimator optimization (included with AutoGluon)
+
+# ============================================================================
+# SPEED OPTIMIZATION #9: Distributed Optuna (OPTIONAL - Linear speedup with workers)
+# ============================================================================
+# mysqlclient>=2.2.0  # OPTIONAL - For MySQL distributed optimization backend
+# psycopg2-binary>=2.9.0  # OPTIONAL - For PostgreSQL distributed optimization backend
+# redis>=5.0.0  # OPTIONAL - For Redis distributed optimization backend (experimental)
+ray>=2.44.0  # OPTIONAL - Distributed computing framework (included with AutoGluon)
+# optuna-dashboard>=0.13.0  # OPTIONAL - Web UI for monitoring optimization studies
+# Note: SQLite support is built-in, no additional packages needed for single-machine distributed optimization
+
+# ============================================================================
+# AUTOML FRAMEWORKS (OPTIONAL - Maximum accuracy, but slower)
+# ============================================================================
+autogluon.tabular[all]==1.4.0  # AutoML ensemble with all dependencies (GPU support, transformers, etc.)
+# Note: AutoGluon is now included in main requirements with comprehensive dependencies
+# May not be faster than our optimized pipeline but provides maximum accuracy
+
+# ============================================================================
+# FEATURE ENGINEERING (REQUIRED for advanced features)
+# ============================================================================
+scipy>=1.10.0  # Required for scientific computations in feature engineering
+joblib>=1.3.0  # Required for feature caching (Speed Opt #6)
+
+# ============================================================================
+# ADVANCED FEATURE ENGINEERING (OPTIONAL)
+# ============================================================================
+# featuretools>=1.28.0  # OPTIONAL - Automated feature engineering
+# tsfresh>=0.20.0  # OPTIONAL - Time series feature extraction
+spacy>=3.8.0  # OPTIONAL - NLP processing for text features (included with AutoGluon)
+transformers>=4.57.0  # OPTIONAL - Hugging Face transformers for advanced NLP features (included with AutoGluon)
+# transformers dependencies: tokenizers>=0.22.0, safetensors>=0.6.0
+
+# ============================================================================
+# MODEL EXPLAINABILITY & INTERPRETABILITY (OPTIONAL - Recommended for competition insights)
+# ============================================================================
+# shap>=0.42.0  # OPTIONAL - SHAP values for model interpretation (helpful for feature insights)
+# lime>=0.2.0  # OPTIONAL - LIME for local interpretability
+
+# ============================================================================
+# VISUALIZATION (REQUIRED for EDA)
+# ============================================================================
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# ============================================================================
+# ADVANCED VISUALIZATION (OPTIONAL)
+# ============================================================================
+# plotly>=5.17.0  # OPTIONAL - Interactive visualizations for EDA
+# streamlit>=1.28.0  # OPTIONAL - Dashboard for model monitoring
+# gradio>=4.0.0  # OPTIONAL - Alternative dashboard framework
+
+# ============================================================================
+# MLOPS & EXPERIMENT TRACKING (OPTIONAL - Recommended for systematic optimization)
+# ============================================================================
+# mlflow>=2.8.0  # OPTIONAL - Experiment tracking and model registry
+# wandb>=0.15.0  # OPTIONAL - Alternative to MLflow (cloud-based)
+
+# ============================================================================
+# DATA QUALITY & PROFILING (OPTIONAL - Helpful for initial analysis)
+# ============================================================================
+# ydata-profiling>=4.0.0  # OPTIONAL - Automated data profiling (formerly pandas-profiling)
+# great-expectations>=0.18.0  # OPTIONAL - Data validation framework
+
+# ============================================================================
+# BACKEND API (REQUIRED for FastAPI)
+# ============================================================================
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+pydantic>=2.5.0
+
+# DEVELOPMENT & JUPYTER (REQUIRED for notebooks)
+# ============================================================================
+jupyter>=1.0.0
+notebook>=6.5.0
+ipykernel>=6.25.0
+
+# ============================================================================
+# HARDWARE DETECTION (REQUIRED for auto-optimization)
+# ============================================================================
+psutil>=5.9.0  # CPU/RAM detection for auto-optimization
+gputil>=1.4.0  # Enhanced GPU monitoring (temperature, load, memory usage)
+
+# ============================================================================
+# UTILITIES (REQUIRED)
+# ============================================================================
+tqdm>=4.65.0  # Progress bars for long-running operations
+omegaconf>=2.3.0  # OPTIONAL - Configuration management (included with AutoGluon)
+einx>=0.3.0  # OPTIONAL - Tensor operations and einsum utilities (included with AutoGluon)
