@@ -381,10 +381,20 @@ def health_check_endpoint(model_dir: str = 'models') -> Dict[str, Any]:
     dependencies = check_dependencies()
     
     # Determine status
-    if all(models_available.values()) and all(dependencies.values()):
-        status = 'healthy'
-        message = 'All systems operational'
-    elif any(models_available.values()) and sum(dependencies.values()) >= 6:
+    # - If core dependencies are all available, treat the system as healthy even
+    #   if no trained models exist; model absence means it needs training, not
+    #   that the system is unhealthy.
+    if all(dependencies.values()):
+        if all(models_available.values()):
+            status = 'healthy'
+            message = 'All systems operational'
+        elif any(models_available.values()):
+            status = 'degraded'
+            message = 'Some models unavailable; functionality partially degraded'
+        else:
+            status = 'healthy'
+            message = 'Dependencies available; no trained models found (training required)'
+    elif sum(dependencies.values()) >= 6:
         status = 'degraded'
         message = 'Some models or dependencies unavailable'
     else:
