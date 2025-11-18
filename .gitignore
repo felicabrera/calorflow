@@ -48,7 +48,23 @@ data/processed/
 data/*/test/removed_by_correction/
 
 # Model artifacts (large files)
+# Keep top-level "models/" for trained model artifacts, but allow
+# the `backend/app/models` Python package (API schema & small code).
 models/
+
+# Allow packaged code under backend/app/models but keep artifacts ignored
+!/backend/app/models/
+!/backend/app/models/**
+
+# Still ignore typical model artifacts inside app models
+/backend/app/models/*.pkl
+/backend/app/models/*.joblib
+/backend/app/models/*.h5
+/backend/app/models/*.hdf5
+/backend/app/models/*.ckpt
+/backend/app/models/*.pth
+/backend/app/models/*.pt
+/backend/app/models/*.onnx
 checkpoints/
 *.pkl
 *.joblib
