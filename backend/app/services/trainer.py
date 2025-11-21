@@ -51,10 +51,15 @@ class TrainerService:
         try:
             # Actualizar estado
             self.training_tasks[task_id]["status"] = "training"
+            self.training_tasks[task_id]["progress"] = 10
+            self.training_tasks[task_id]["current_step"] = "Cargando datos..."
             
             # Cargar datos
             train_file = self.data_dir / f"{process.lower()}_train.csv"
             df = pd.read_csv(train_file)
+            
+            self.training_tasks[task_id]["progress"] = 20
+            self.training_tasks[task_id]["current_step"] = "Preparando features..."
             
             # Preparar datos
             exclude_cols = ['sampled_date', 'PCI', 'H2', 'sample_weight', 'has_actual_measurement']
@@ -63,6 +68,9 @@ class TrainerService:
             X = df[feature_cols]
             y_pci = df['PCI']
             y_h2 = df['H2']
+            
+            self.training_tasks[task_id]["progress"] = 30
+            self.training_tasks[task_id]["current_step"] = "Configurando entrenamiento..."
             
             # Configurar entrenamiento
             trainer_config = TrainerConfig()
@@ -74,21 +82,44 @@ class TrainerService:
                 if 'use_autogluon' in config:
                     trainer_config.use_autogluon = config['use_autogluon']
             
+            self.training_tasks[task_id]["progress"] = 40
+            self.training_tasks[task_id]["current_step"] = f"Entrenando modelos ({trainer_config.n_trials} trials)..."
+            
             # Entrenar
             trainer = MLTrainer(trainer_config)
             results = trainer.train(X, y_pci, y_h2, process_name=process, output_dir=str(self.models_dir / process))
             
+            self.training_tasks[task_id]["progress"] = 90
+            self.training_tasks[task_id]["current_step"] = "Guardando modelos..."
+            
             # Guardar
             trainer.save(str(self.models_dir / process), process)
             
-            # Actualizar estado
+            # Actualizar estado con resultados
             self.training_tasks[task_id]["status"] = "completed"
-            self.training_tasks[task_id]["results"] = results
             self.training_tasks[task_id]["progress"] = 100
+            self.training_tasks[task_id]["current_step"] = "Completado"
+            self.training_tasks[task_id]["results"] = {
+                "pci_metrics": {
+                    "rmse": float(results.get("pci_rmse", 0)),
+                    "mae": float(results.get("pci_mae", 0)),
+                    "r2": float(results.get("pci_r2", 0))
+                },
+                "h2_metrics": {
+                    "rmse": float(results.get("h2_rmse", 0)),
+                    "mae": float(results.get("h2_mae", 0)),
+                    "r2": float(results.get("h2_r2", 0))
+                },
+                "config": {
+                    "n_trials": trainer_config.n_trials,
+                    "cv_folds": trainer_config.cv_folds
+                }
+            }
             
         except Exception as e:
             self.training_tasks[task_id]["status"] = "failed"
             self.training_tasks[task_id]["error"] = str(e)
+            self.training_tasks[task_id]["current_step"] = f"Error: {str(e)}"
     
     async def get_training_status(self, task_id: str) -> dict:
         """Obtener estado del entrenamiento"""
