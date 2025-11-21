@@ -77,13 +77,17 @@ class TrainerService:
             if config:
                 if 'n_trials' in config:
                     trainer_config.n_trials = config['n_trials']
+                    # Si hay pocos trials, entrenar solo los mejores modelos
+                    if config['n_trials'] <= 20:
+                        trainer_config.models_to_train = ['xgboost', 'lightgbm']
                 if 'cv_folds' in config:
                     trainer_config.cv_folds = config['cv_folds']
                 if 'use_autogluon' in config:
                     trainer_config.use_autogluon = config['use_autogluon']
             
             self.training_tasks[task_id]["progress"] = 40
-            self.training_tasks[task_id]["current_step"] = f"Entrenando modelos ({trainer_config.n_trials} trials)..."
+            n_models = len(trainer_config.models_to_train)
+            self.training_tasks[task_id]["current_step"] = f"Entrenando {n_models} modelos con {trainer_config.n_trials} trials cada uno..."
             
             # Entrenar
             trainer = MLTrainer(trainer_config)

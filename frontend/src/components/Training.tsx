@@ -298,11 +298,24 @@ export default function Training() {
       <div className="card">
         <h2>ℹ️ Información sobre el Entrenamiento</h2>
         <div style={{ color: '#333', lineHeight: '1.8' }}>
-          <p><strong>Modelos:</strong> XGBoost, LightGBM, CatBoost</p>
+          <p><strong>Modelos a entrenar:</strong> {nTrials <= 20 ? '2 modelos (XGBoost, LightGBM)' : '4 modelos (XGBoost, LightGBM, CatBoost, RandomForest)'}</p>
+          <p><strong>Targets:</strong> PCI y H2 (2 modelos por cada uno)</p>
+          <p><strong>Trials por modelo:</strong> {nTrials}</p>
+          <p><strong>Total de trials:</strong> {nTrials <= 20 ? nTrials * 2 * 2 : nTrials * 4 * 2} trials ({nTrials <= 20 ? '2' : '4'} modelos × 2 targets × {nTrials} trials)</p>
           <p><strong>Optimización:</strong> Bayesian Optimization con Optuna</p>
           <p><strong>Ensemble:</strong> Meta-learner con Ridge Regression</p>
-          <p><strong>Validación:</strong> K-Fold Cross Validation</p>
-          <p><strong>Tiempo estimado:</strong> {Math.round(nTrials / 10)} - {Math.round(nTrials / 5)} minutos</p>
+          <p><strong>Validación:</strong> {cvFolds}-Fold Cross Validation</p>
+          <p><strong>⏱️ Tiempo estimado:</strong> {nTrials <= 20 ? `${Math.round(nTrials * 0.5)}-${Math.round(nTrials * 1)}` : `${Math.round(nTrials * 2)}-${Math.round(nTrials * 4)}`} minutos</p>
+        </div>
+        <div style={{ 
+          marginTop: '1rem', 
+          padding: '0.75rem', 
+          background: '#fef3c7',
+          borderRadius: '4px',
+          fontSize: '0.875rem',
+          color: '#92400e'
+        }}>
+          💡 <strong>Tip:</strong> Para entrenamientos rápidos (≤20 trials), solo se entrenan XGBoost y LightGBM. Para entrenamientos completos (&gt;20 trials), se entrenan los 4 modelos.
         </div>
       </div>
     </div>
