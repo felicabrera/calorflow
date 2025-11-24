@@ -1,0 +1,6 @@
+#logOutput{height:220px; overflow:auto}
+#modelsList{max-height:220px; overflow:auto}
+.progress{overflow:visible !important}
+.progress-bar{height:18px}
+.card{border-radius:8px}
+body{background:#f8fafc}

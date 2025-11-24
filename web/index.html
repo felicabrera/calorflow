@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calorflow</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="container my-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h1 class="h3">Calorflow — Training & Prediction</h1>
+      <div>
+        <button id="preprocessBtn" class="btn btn-outline-secondary">Run Preprocess</button>
+        <a href="/docs" class="btn btn-outline-primary">API Docs</a>
+        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark" target="_blank">GitHub</a>
+      </div>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card mb-3">
+          <div class="card-header">Training</div>
+          <div class="card-body">
+            <div class="mb-2">
+              <label class="form-label">Process</label>
+              <div class="d-flex align-items-center">
+                <select id="processSelect" class="form-select me-2">
+                <option>FCC</option>
+                <option>CCR</option>
+                <option selected>BOTH</option>
+                </select>
+                <div class="small text-muted">
+                  <span id="fccModelCount">0</span> FCC • <span id="ccrModelCount">0</span> CCR
+                </div>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label">Optuna Trials</label>
+              <input type="number" id="nTrialsInput" class="form-control" value="20" min="1" />
+            </div>
+            <div class="d-grid gap-2">
+              <button id="trainBtn" class="btn btn-primary">Start Training</button>
+              <button id="cancelBtn" class="btn btn-outline-danger">Cancel Training</button>
+            </div>
+            <div class="mb-3">
+              <div id="trainStatus" class="small text-muted">Not started</div>
+              <div id="trainStatusFCC" class="small text-muted">FCC: Not started</div>
+              <div id="trainStatusCCR" class="small text-muted">CCR: Not started</div>
+              <div id="trainProgressFCC" class="progress mt-2" style="height:10px; display:none">
+                <div id="trainProgressBarFCC" class="progress-bar" role="progressbar"></div>
+              </div>
+              <div id="trainProgressCCR" class="progress mt-2" style="height:10px; display:none">
+                <div id="trainProgressBarCCR" class="progress-bar" role="progressbar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header">Models</div>
+          <div class="card-body">
+            <div class="d-flex gap-2 mb-2">
+              <button id="refreshModelsBtn" class="btn btn-sm btn-outline-secondary">Refresh</button>
+              <button id="deleteAllModelsBtn" class="btn btn-sm btn-outline-danger">Delete All</button>
+            </div>
+            <ul id="modelsList" class="list-group small"></ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Prediction</div>
+          <div class="card-body">
+            <div class="mb-2">
+              <label class="form-label">Sample as JSON</label>
+              <textarea id="sampleInput" class="form-control" rows="4">[{"sensor_flow_mean": 100.0, "sensor_temp_mean": 120.0}]</textarea>
+            </div>
+            <button id="predictBtn" class="btn btn-success">Predict</button>
+            <pre id="predictOut" class="mt-2 small"></pre>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-8">
+        <div class="card mb-3">
+          <div class="card-header">Training Metrics</div>
+          <div class="card-body">
+            <canvas id="metricChart"></canvas>
+            <div class="small fst-italic mt-2" id="metricEmptyMsg">No data to show yet.</div>
+          </div>
+        </div>
+        <div class="card mb-3">
+          <div class="card-header">Real-time RMSE & Accuracy</div>
+          <div class="card-body">
+            <div id="realtimeMetrics">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>PCI</h6>
+                  <div>RMSE: <span id="pciRmse">-</span></div>
+                  <div>Within ±10%: <span id="pciWithin">-</span>%</div>
+                </div>
+                <div class="col-md-6">
+                  <h6>H2</h6>
+                  <div>RMSE: <span id="h2Rmse">-</span></div>
+                  <div>Within ±10%: <span id="h2Within">-</span>%</div>
+                </div>
+              </div>
+              <hr />
+              <div>
+                <strong>Aggregate (FCC + CCR avg)</strong>
+                <div>PCI RMSE avg: <span id="avgPciRmse">-</span></div>
+                <div>H2 RMSE avg: <span id="avgH2Rmse">-</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Real-time Logs</div>
+          <div class="card-body"><pre id="logOutput" class="small"></pre></div>
+          <div class="card-footer small fst-italic text-muted" id="logsEmptyMsg">No logs yet.</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-4 small text-muted">© CalorFlow 2 — Minimal UI for training and predictions</footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
