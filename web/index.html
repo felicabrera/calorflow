@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,15 +10,17 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
+
 <body>
-  
+
   <nav class="navbar navbar-expand-lg mb-4">
     <div class="container">
       <a class="navbar-brand" href="#">Calorflow</a>
       <div class="d-flex gap-2">
         <button id="preprocessBtn" class="btn btn-outline-secondary btn-sm">Run Preprocess</button>
         <a href="/docs" class="btn btn-outline-primary btn-sm" target="_blank">API Docs</a>
-        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark btn-sm" target="_blank">GitHub</a>
+        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark btn-sm"
+          target="_blank">GitHub</a>
       </div>
     </div>
   </nav>
@@ -26,7 +29,7 @@
     <div class="row g-4">
       <!-- Left Column: Controls -->
       <div class="col-lg-4">
-        
+
         <!-- Training Card -->
         <div class="card">
           <div class="card-header">Training Control</div>
@@ -40,11 +43,12 @@
                   <option selected>BOTH</option>
                 </select>
                 <div class="small text-muted text-nowrap">
-                  <span id="fccModelCount" class="fw-bold text-dark">0</span> FCC • <span id="ccrModelCount" class="fw-bold text-dark">0</span> CCR
+                  <span id="fccModelCount" class="fw-bold text-dark">0</span> FCC • <span id="ccrModelCount"
+                    class="fw-bold text-dark">0</span> CCR
                 </div>
               </div>
             </div>
-            
+
             <div class="mb-4">
               <label class="form-label fw-bold small text-muted text-uppercase">Optuna Trials</label>
               <input type="number" id="nTrialsInput" class="form-control" value="20" min="1" />
@@ -57,7 +61,7 @@
 
             <div class="bg-light p-3 rounded">
               <div id="trainStatus" class="small fw-bold mb-2">Not started</div>
-              
+
               <!-- FCC Progress -->
               <div class="mb-2">
                 <div class="d-flex justify-content-between small text-muted mb-1">
@@ -103,7 +107,8 @@
           <div class="card-body">
             <div class="mb-3">
               <label class="form-label fw-bold small text-muted text-uppercase">Input JSON</label>
-              <textarea id="sampleInput" class="form-control font-monospace small" rows="4">[{"sensor_flow_mean": 100.0, "sensor_temp_mean": 120.0}]</textarea>
+              <textarea id="sampleInput" class="form-control font-monospace small"
+                rows="4">[{"sensor_flow_mean": 100.0, "sensor_temp_mean": 120.0}]</textarea>
             </div>
             <button id="predictBtn" class="btn btn-success w-100 mb-3">Predict</button>
             <div class="bg-light p-2 rounded border">
@@ -116,13 +121,13 @@
 
       <!-- Right Column: Metrics & Logs -->
       <div class="col-lg-8">
-        
+
         <!-- Metrics Chart -->
         <div class="card">
           <div class="card-header">Training Metrics (RMSE)</div>
           <div class="card-body">
             <div style="position: relative; height: 300px; width: 100%;">
-                <canvas id="metricChart"></canvas>
+              <canvas id="metricChart"></canvas>
             </div>
             <div class="small text-center text-muted mt-2" id="metricEmptyMsg">Start training to see metrics live.</div>
           </div>
@@ -150,17 +155,17 @@
             </div>
             <hr class="my-4">
             <div class="row text-center">
-               <div class="col-12">
-                 <h6 class="text-muted text-uppercase small fw-bold">Aggregate (FCC + CCR Avg)</h6>
-               </div>
-               <div class="col-6">
-                 <div class="h4 mb-0" id="avgPciRmse">-</div>
-                 <small class="text-muted">Avg PCI RMSE</small>
-               </div>
-               <div class="col-6">
-                 <div class="h4 mb-0" id="avgH2Rmse">-</div>
-                 <small class="text-muted">Avg H2 RMSE</small>
-               </div>
+              <div class="col-12">
+                <h6 class="text-muted text-uppercase small fw-bold">Aggregate (FCC + CCR Avg)</h6>
+              </div>
+              <div class="col-6">
+                <div class="h4 mb-0" id="avgPciRmse">-</div>
+                <small class="text-muted">Avg PCI RMSE</small>
+              </div>
+              <div class="col-6">
+                <div class="h4 mb-0" id="avgH2Rmse">-</div>
+                <small class="text-muted">Avg H2 RMSE</small>
+              </div>
             </div>
           </div>
         </div>
@@ -177,10 +182,11 @@
     </div>
 
     <footer class="text-center">
-      <p>&copy; 2025 CalorFlow 2.0 &mdash; Advanced Process Control</p>
+      <p>&copy; 2025 Calorflow &mdash; Advanced Process Control</p>
     </footer>
   </div>
 
   <script src="/static/app.js"></script>
 </body>
+
 </html>
