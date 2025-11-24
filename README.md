@@ -1,4 +1,4 @@
-# CalorFlow 2 - Minimal API + Frontend
+# Calorflow
 
 This repository contains a lightweight API server and a simple web UI that implements the preprocessing and model training logic extracted from the `train_competition.ipynb` notebook. The backend is a FastAPI application with endpoints for preprocessing, model training, and predictions. The UI is a small Bootstrap single page that talks to the API.
 
@@ -60,7 +60,3 @@ docker-compose up -d --build
 ```
 
 Then visit `http://localhost:8000` and use the UI or `http://localhost:8000/docs` for API docs.
-
-## Contributions
-
-If you want further improvements (websockets for real-time training logs, background job queue like Celery/Redis, Docker compose, or a React-based UI), open an issue with the desired changes and I’ll extend the features.
