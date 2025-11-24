@@ -5,127 +5,180 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Calorflow</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-  <div class="container my-4">
-      <div class="d-flex justify-content-between align-items-center">
-        <h1 class="h3">Calorflow — Training & Prediction</h1>
-      <div>
-        <button id="preprocessBtn" class="btn btn-outline-secondary">Run Preprocess</button>
-        <a href="/docs" class="btn btn-outline-primary">API Docs</a>
-        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark" target="_blank">GitHub</a>
+  
+  <nav class="navbar navbar-expand-lg mb-4">
+    <div class="container">
+      <a class="navbar-brand" href="#">Calorflow</a>
+      <div class="d-flex gap-2">
+        <button id="preprocessBtn" class="btn btn-outline-secondary btn-sm">Run Preprocess</button>
+        <a href="/docs" class="btn btn-outline-primary btn-sm" target="_blank">API Docs</a>
+        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark btn-sm" target="_blank">GitHub</a>
       </div>
     </div>
-    <hr />
+  </nav>
 
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card mb-3">
-          <div class="card-header">Training</div>
+  <div class="container">
+    <div class="row g-4">
+      <!-- Left Column: Controls -->
+      <div class="col-lg-4">
+        
+        <!-- Training Card -->
+        <div class="card">
+          <div class="card-header">Training Control</div>
           <div class="card-body">
-            <div class="mb-2">
-              <label class="form-label">Process</label>
+            <div class="mb-3">
+              <label class="form-label fw-bold small text-muted text-uppercase">Process</label>
               <div class="d-flex align-items-center">
                 <select id="processSelect" class="form-select me-2">
-                <option>FCC</option>
-                <option>CCR</option>
-                <option selected>BOTH</option>
+                  <option>FCC</option>
+                  <option>CCR</option>
+                  <option selected>BOTH</option>
                 </select>
-                <div class="small text-muted">
-                  <span id="fccModelCount">0</span> FCC • <span id="ccrModelCount">0</span> CCR
+                <div class="small text-muted text-nowrap">
+                  <span id="fccModelCount" class="fw-bold text-dark">0</span> FCC • <span id="ccrModelCount" class="fw-bold text-dark">0</span> CCR
                 </div>
               </div>
             </div>
-            <div class="mb-2">
-              <label class="form-label">Optuna Trials</label>
+            
+            <div class="mb-4">
+              <label class="form-label fw-bold small text-muted text-uppercase">Optuna Trials</label>
               <input type="number" id="nTrialsInput" class="form-control" value="20" min="1" />
             </div>
-            <div class="d-grid gap-2">
+
+            <div class="d-grid gap-2 mb-3">
               <button id="trainBtn" class="btn btn-primary">Start Training</button>
-              <button id="cancelBtn" class="btn btn-outline-danger">Cancel Training</button>
+              <button id="cancelBtn" class="btn btn-outline-danger" style="display:none">Cancel Training</button>
             </div>
-            <div class="mb-3">
-              <div id="trainStatus" class="small text-muted">Not started</div>
-              <div id="trainStatusFCC" class="small text-muted">FCC: Not started</div>
-              <div id="trainStatusCCR" class="small text-muted">CCR: Not started</div>
-              <div id="trainProgressFCC" class="progress mt-2" style="height:10px; display:none">
-                <div id="trainProgressBarFCC" class="progress-bar" role="progressbar"></div>
+
+            <div class="bg-light p-3 rounded">
+              <div id="trainStatus" class="small fw-bold mb-2">Not started</div>
+              
+              <!-- FCC Progress -->
+              <div class="mb-2">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                  <span>FCC</span>
+                  <span id="trainStatusFCC">Waiting...</span>
+                </div>
+                <div class="progress">
+                  <div id="trainProgressBarFCC" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
               </div>
-              <div id="trainProgressCCR" class="progress mt-2" style="height:10px; display:none">
-                <div id="trainProgressBarCCR" class="progress-bar" role="progressbar"></div>
+
+              <!-- CCR Progress -->
+              <div>
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                  <span>CCR</span>
+                  <span id="trainStatusCCR">Waiting...</span>
+                </div>
+                <div class="progress">
+                  <div id="trainProgressBarCCR" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="card mb-3">
-          <div class="card-header">Models</div>
-          <div class="card-body">
-            <div class="d-flex gap-2 mb-2">
+        <!-- Models Card -->
+        <div class="card">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Saved Models</span>
+            <div class="btn-group">
               <button id="refreshModelsBtn" class="btn btn-sm btn-outline-secondary">Refresh</button>
-              <button id="deleteAllModelsBtn" class="btn btn-sm btn-outline-danger">Delete All</button>
+              <button id="deleteAllModelsBtn" class="btn btn-sm btn-outline-danger">Clear All</button>
             </div>
-            <ul id="modelsList" class="list-group small"></ul>
+          </div>
+          <div class="card-body p-0">
+            <ul id="modelsList" class="list-group list-group-flush"></ul>
           </div>
         </div>
 
+        <!-- Prediction Card -->
         <div class="card">
           <div class="card-header">Prediction</div>
           <div class="card-body">
-            <div class="mb-2">
-              <label class="form-label">Sample as JSON</label>
-              <textarea id="sampleInput" class="form-control" rows="4">[{"sensor_flow_mean": 100.0, "sensor_temp_mean": 120.0}]</textarea>
+            <div class="mb-3">
+              <label class="form-label fw-bold small text-muted text-uppercase">Input JSON</label>
+              <textarea id="sampleInput" class="form-control font-monospace small" rows="4">[{"sensor_flow_mean": 100.0, "sensor_temp_mean": 120.0}]</textarea>
             </div>
-            <button id="predictBtn" class="btn btn-success">Predict</button>
-            <pre id="predictOut" class="mt-2 small"></pre>
+            <button id="predictBtn" class="btn btn-success w-100 mb-3">Predict</button>
+            <div class="bg-light p-2 rounded border">
+              <pre id="predictOut" class="mb-0 small text-wrap" style="max-height: 150px; overflow-y: auto;"></pre>
+            </div>
           </div>
         </div>
 
       </div>
-      <div class="col-md-8">
-        <div class="card mb-3">
-          <div class="card-header">Training Metrics</div>
+
+      <!-- Right Column: Metrics & Logs -->
+      <div class="col-lg-8">
+        
+        <!-- Metrics Chart -->
+        <div class="card">
+          <div class="card-header">Training Metrics (RMSE)</div>
           <div class="card-body">
-            <canvas id="metricChart"></canvas>
-            <div class="small fst-italic mt-2" id="metricEmptyMsg">No data to show yet.</div>
+            <div style="position: relative; height: 300px; width: 100%;">
+                <canvas id="metricChart"></canvas>
+            </div>
+            <div class="small text-center text-muted mt-2" id="metricEmptyMsg">Start training to see metrics live.</div>
           </div>
         </div>
-        <div class="card mb-3">
-          <div class="card-header">Real-time RMSE & Accuracy</div>
+
+        <!-- Real-time Stats -->
+        <div class="card">
+          <div class="card-header">Real-time Performance</div>
           <div class="card-body">
-            <div id="realtimeMetrics">
-              <div class="row">
-                <div class="col-md-6">
-                  <h6>PCI</h6>
-                  <div>RMSE: <span id="pciRmse">-</span></div>
-                  <div>Within ±10%: <span id="pciWithin">-</span>%</div>
-                </div>
-                <div class="col-md-6">
-                  <h6>H2</h6>
-                  <div>RMSE: <span id="h2Rmse">-</span></div>
-                  <div>Within ±10%: <span id="h2Within">-</span>%</div>
-                </div>
+            <div class="row text-center">
+              <div class="col-md-6 border-end">
+                <h6 class="text-primary fw-bold">PCI Model</h6>
+                <div class="display-6 my-2" id="pciRmse">-</div>
+                <div class="small text-muted">RMSE</div>
+                <div class="mt-2 text-success fw-bold"><span id="pciWithin">-</span>%</div>
+                <div class="small text-muted">Within ±10%</div>
               </div>
-              <hr />
-              <div>
-                <strong>Aggregate (FCC + CCR avg)</strong>
-                <div>PCI RMSE avg: <span id="avgPciRmse">-</span></div>
-                <div>H2 RMSE avg: <span id="avgH2Rmse">-</span></div>
+              <div class="col-md-6">
+                <h6 class="text-danger fw-bold">H2 Model</h6>
+                <div class="display-6 my-2" id="h2Rmse">-</div>
+                <div class="small text-muted">RMSE</div>
+                <div class="mt-2 text-success fw-bold"><span id="h2Within">-</span>%</div>
+                <div class="small text-muted">Within ±10%</div>
               </div>
+            </div>
+            <hr class="my-4">
+            <div class="row text-center">
+               <div class="col-12">
+                 <h6 class="text-muted text-uppercase small fw-bold">Aggregate (FCC + CCR Avg)</h6>
+               </div>
+               <div class="col-6">
+                 <div class="h4 mb-0" id="avgPciRmse">-</div>
+                 <small class="text-muted">Avg PCI RMSE</small>
+               </div>
+               <div class="col-6">
+                 <div class="h4 mb-0" id="avgH2Rmse">-</div>
+                 <small class="text-muted">Avg H2 RMSE</small>
+               </div>
             </div>
           </div>
         </div>
+
+        <!-- Logs -->
         <div class="card">
-          <div class="card-header">Real-time Logs</div>
-          <div class="card-body"><pre id="logOutput" class="small"></pre></div>
-          <div class="card-footer small fst-italic text-muted" id="logsEmptyMsg">No logs yet.</div>
+          <div class="card-header">System Logs</div>
+          <div class="card-body p-0">
+            <pre id="logOutput" class="m-0 rounded-bottom"></pre>
+          </div>
         </div>
+
       </div>
     </div>
 
-    <footer class="mt-4 small text-muted">© CalorFlow 2 — Minimal UI for training and predictions</footer>
+    <footer class="text-center">
+      <p>&copy; 2025 CalorFlow 2.0 &mdash; Advanced Process Control</p>
+    </footer>
   </div>
 
   <script src="/static/app.js"></script>
