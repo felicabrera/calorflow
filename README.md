@@ -38,12 +38,6 @@ Open `web/index.html` to see the UI. It uses Chart.js for simple metrics graphs.
 - Models are saved into `models/` as `fcc_pci_xgboost.joblib` etc.
 - Training checkpoints `/checkpoints/<process>_results.json` contain the train results.
 
-## Notes
-
-- The training code is a simplified, API-friendly subset of the notebook pipeline. It includes essential preprocessing, baseline ensemble training, and model saving.
-- For the full dataset, longer training with Optuna and AutoGluon is recommended — the API supports `n_trials` parameter but the server defaults to a very conservative number (20) to keep responsive in an API environment.
-For the full dataset, longer training with Optuna and AutoGluon is recommended — the API supports `n_trials` parameter but the server defaults to a very conservative number (20) to keep responsive in an API environment. Adjust using the UI or call `/api/train` with `n_trials`.
-
 ## Docker Compose (all services)
 
 This repository includes a `docker-compose.yml` which creates the following services:
