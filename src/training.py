@@ -139,7 +139,11 @@ def train_model_for_target(X_train: pd.DataFrame, y_train: pd.Series, target_nam
     ensemble_pred = np.mean(preds, axis=0)
 
     val_rmse = np.sqrt(mean_squared_error(y_val, ensemble_pred))
-    val_r2 = 1.0 - sum((y_val - ensemble_pred)**2) / sum((y_val - y_val.mean())**2)
+    ss_tot = sum((y_val - y_val.mean())**2)
+    if ss_tot < 1e-9:
+        val_r2 = 0.0
+    else:
+        val_r2 = 1.0 - sum((y_val - ensemble_pred)**2) / ss_tot
     pct_within_10 = (np.abs((y_val - ensemble_pred) / (y_val + 1e-6)) <= 0.10).mean() * 100.0
 
     metrics = {
@@ -192,12 +196,16 @@ def train_process_models(train_df: pd.DataFrame, process_name: str, n_trials: in
     y_pci = train_df['PCI'].copy()
     y_h2 = train_df['H2'].copy()
 
-    # Fill nan (median)
+    # Calculate imputation values (medians)
+    imputation_values = {}
     for c in X.columns:
         if X[c].isnull().all():
-            X[c] = 0
+            imputation_values[c] = 0.0
+            X[c] = 0.0
         else:
-            X[c] = X[c].fillna(X[c].median())
+            median_val = float(X[c].median())
+            imputation_values[c] = median_val
+            X[c] = X[c].fillna(median_val)
 
     # Create basic physics features (we import function locally to avoid cycles)
     try:
@@ -230,6 +238,7 @@ def train_process_models(train_df: pd.DataFrame, process_name: str, n_trials: in
     return {
         'process_name': process_name,
         'feature_cols': X.columns.tolist(),
+        'imputation_values': imputation_values,
         'pci': pci_res,
         'h2': h2_res
     }
@@ -245,9 +254,15 @@ def predict_with_ensemble(models_dict: Dict[str, Any], df: pd.DataFrame):
             df[col] = 0
     X = df[feature_cols].copy()
 
-    # Impute
+    # Impute using saved values if available, else fallback to 0 (safe default for API)
+    imputation_values = models_dict.get('imputation_values', {})
+    
     for c in X.columns:
-        X[c] = X[c].fillna(X[c].median() if not X[c].isnull().all() else 0)
+        if c in imputation_values:
+            X[c] = X[c].fillna(imputation_values[c])
+        else:
+            # Fallback for unknown columns or if no imputation values provided
+            X[c] = X[c].fillna(0)
 
     pci_models = models_dict['pci']['models']
     h2_models = models_dict['h2']['models']
