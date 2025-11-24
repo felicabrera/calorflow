@@ -59,7 +59,9 @@ docker-compose.override.yml
 /models/
 /checkpoints/
 /mlruns/
-# /data/processed/
+/data/processed/
+catboost_info/
+verification_output*.txt
 
 # C extensions, compiled and caches
 *.so
