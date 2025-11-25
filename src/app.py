@@ -157,26 +157,26 @@ def train(request: TrainRequest, background_tasks: BackgroundTasks):
 
             # Train models
             # Run via Celery if available
-            try:
-                # schedule celery task and return job id
-                task = train_process_task.delay(process_name, n_trials, use_optuna)
-                TRAIN_JOBS[process_name]['celery_task_id'] = task.id
-                # Store DB entry for this task
-                try:
-                    db = SessionLocal()
-                    tr = TrainingRun(process=process_name, status='queued')
-                    db.add(tr)
-                    db.commit()
-                except Exception:
-                    pass
-                append_log(process_name, 'Training scheduled (celery) - task id: ' + str(task.id))
-                # We won't block here - job will run asynchronously via Celery
-                return
-            except Exception:
-                # fallback local training
-                publish_update(process_name, {'event': 'local_training_started', 'message': 'Local training fallback active'})
-                result = train_process_models(train_df, process_name, n_trials=n_trials, use_optuna=use_optuna, progress_callback=lambda m: publish_update(process_name, m))
-                publish_update(process_name, {'event': 'local_training_completed', 'metrics': {'pci': result['pci']['metrics'], 'h2': result['h2']['metrics']}})
+            # try:
+            #     # schedule celery task and return job id
+            #     task = train_process_task.delay(process_name, n_trials, use_optuna)
+            #     TRAIN_JOBS[process_name]['celery_task_id'] = task.id
+            #     # Store DB entry for this task
+            #     try:
+            #         db = SessionLocal()
+            #         tr = TrainingRun(process=process_name, status='queued')
+            #         db.add(tr)
+            #         db.commit()
+            #     except Exception:
+            #         pass
+            #     append_log(process_name, 'Training scheduled (celery) - task id: ' + str(task.id))
+            #     # We won't block here - job will run asynchronously via Celery
+            #     return
+            # except Exception:
+            #     # fallback local training
+            publish_update(process_name, {'event': 'local_training_started', 'message': 'Local training fallback active'})
+            result = train_process_models(train_df, process_name, n_trials=n_trials, use_optuna=use_optuna, progress_callback=lambda m: publish_update(process_name, m))
+            publish_update(process_name, {'event': 'local_training_completed', 'metrics': {'pci': result['pci']['metrics'], 'h2': result['h2']['metrics']}})
             # Save models
             for model_type, m in result['pci']['models'].items():
                 save_model(process_name, 'PCI', model_type, m)
@@ -198,6 +198,7 @@ def train(request: TrainRequest, background_tasks: BackgroundTasks):
             save_checkpoint(process_name, 'results', {
                 'metrics': TRAIN_JOBS[process]['metrics'],
                 'feature_cols': result.get('feature_cols'),
+                'imputation_values': result.get('imputation_values'),
                 'trained_at': time.time()
             })
         except Exception as e:
@@ -446,8 +447,10 @@ def predict(req: PredictRequest):
     # Attempt to load checkpoint with feature_cols
     ckpt = load_checkpoint(process, 'results')
     feature_cols = None
-    if ckpt is not None and ckpt.get('feature_cols'):
-        feature_cols = ckpt['feature_cols']
+    imputation_values = None
+    if ckpt is not None:
+        feature_cols = ckpt.get('feature_cols')
+        imputation_values = ckpt.get('imputation_values')
 
     # Load models
     # The model manager expects saved models in /models
@@ -480,7 +483,12 @@ def predict(req: PredictRequest):
     if not pci_models and not h2_models:
         raise HTTPException(status_code=400, detail='No models available for this process - train first')
 
-    models = {'pci': {'models': pci_models}, 'h2': {'models': h2_models}, 'feature_cols': feature_cols or df.columns.tolist()}
+    models = {
+        'pci': {'models': pci_models},
+        'h2': {'models': h2_models},
+        'feature_cols': feature_cols or df.columns.tolist(),
+        'imputation_values': imputation_values or {}
+    }
     preds = predict_with_ensemble(models, df.copy())
 
     for idx, row in preds.iterrows():
