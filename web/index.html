@@ -13,14 +13,23 @@
 
 <body>
 
-  <nav class="navbar navbar-expand-lg mb-4">
+  <nav class="navbar navbar-expand-lg mb-4 navbar-light">
     <div class="container">
-      <a class="navbar-brand" href="#">Calorflow</a>
+      <a class="navbar-brand fw-bold" href="#">
+        <span class="badge bg-gradient" style="background: linear-gradient(135deg, #2563eb, #7c3aed); padding: 0.35rem 0.75rem;">CF</span>
+        Calorflow
+      </a>
       <div class="d-flex gap-2">
-        <button id="preprocessBtn" class="btn btn-outline-secondary btn-sm">Run Preprocess</button>
-        <a href="/docs" class="btn btn-outline-primary btn-sm" target="_blank">API Docs</a>
-        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark btn-sm"
-          target="_blank">GitHub</a>
+        <button id="preprocessBtn" class="btn btn-outline-secondary btn-sm rounded-pill">
+          <span class="material-icons-outlined" style="font-size: 1rem; vertical-align: middle;">refresh</span> Run Preprocess
+        </button>
+        <a href="/docs" class="btn btn-outline-primary btn-sm rounded-pill" target="_blank">
+          <span class="material-icons-outlined" style="font-size: 1rem; vertical-align: middle;">api</span> API Docs
+        </a>
+        <a href="https://github.com/felicabrera/calorflow" class="btn btn-outline-dark btn-sm rounded-pill"
+          target="_blank">
+          <span class="material-icons-outlined" style="font-size: 1rem; vertical-align: middle;">code</span> GitHub
+        </a>
       </div>
     </div>
   </nav>
